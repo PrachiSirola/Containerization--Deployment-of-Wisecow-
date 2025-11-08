@@ -1,0 +1,530 @@
+Initialising Kubernetes... done
+
+controlplane:~$ ^[[200~cat > Dockerfile <<'EOF'
+> FROM debian:bookworm
+> 
+> RUN apt-get update && apt-get install -y fortune-mod cowsay netcat-openbsd bash && \
+>     apt-get clean && rm -rf /var/lib/apt/lists/*
+> 
+> COPY wisecow.sh /usr/local/bin/wisecow.sh
+> RUN chmod +x /usr/local/bin/wisecow.sh
+> 
+> EXPOSE 4499
+> CMD ["/usr/local/bin/wisecow.sh"]
+> EOF
+cat: command not found
+controlplane:~$ 
+controlplane:~$ cat > wisecow.sh <<'EOF'
+> #!/bin/bash
+> PORT=4499
+> while true; do
+>   MSG=$(fortune | cowsay)
+>   echo -e "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n$MSG" | nc -l -p $PORT -q 1
+> done
+> EOF
+controlplane:~$ ~apt-get update && apt-get install -y fortune-mod cowsay netcat-openbsd bash && \
+>     apt-get clean && rm -rf /var/lib/apt/lists/*
+Command '~apt-get' not found, did you mean:
+  command 'apt-get' from deb apt (2.8.3)
+Try: apt install <deb name>
+controlplane:~$ apt-get update && apt-get install -y fortune-mod cowsay netcat-openbsd bash &&
+> apt-get update && apt-get install -y fortune-mod cowsay netcat-openbsd bash   
+Hit:1 http://archive.ubuntu.com/ubuntu noble InRelease                                    
+Hit:3 http://security.ubuntu.com/ubuntu noble-security InRelease                          
+Hit:4 https://packages.mozilla.org/apt mozilla InRelease                               
+Hit:5 http://archive.ubuntu.com/ubuntu noble-updates InRelease                         
+Hit:6 http://archive.ubuntu.com/ubuntu noble-backports InRelease                 
+Hit:2 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.34/deb  InRelease
+Reading package lists... Done
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+netcat-openbsd is already the newest version (1.226-1ubuntu2).
+netcat-openbsd set to manually installed.
+bash is already the newest version (5.2.21-2ubuntu4).
+Suggested packages:
+  filters cowsay-off fortunes bsdmainutils
+The following NEW packages will be installed:
+  cowsay fortune-mod fortunes-min librecode0
+0 upgraded, 4 newly installed, 0 to remove and 31 not upgraded.
+Need to get 730 kB of archives.
+After this operation, 2222 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu noble/universe amd64 cowsay all 3.03+dfsg2-8 [18.6 kB]
+Get:2 http://archive.ubuntu.com/ubuntu noble/main amd64 librecode0 amd64 3.6-26 [625 kB]
+Get:3 http://archive.ubuntu.com/ubuntu noble/universe amd64 fortune-mod amd64 1:1.99.1-7.3build1 [32.7 kB]
+Get:4 http://archive.ubuntu.com/ubuntu noble/universe amd64 fortunes-min all 1:1.99.1-7.3build1 [53.1 kB]
+Fetched 730 kB in 3s (212 kB/s)      
+Selecting previously unselected package cowsay.
+(Reading database ... 140082 files and directories currently installed.)
+Preparing to unpack .../cowsay_3.03+dfsg2-8_all.deb ...
+Unpacking cowsay (3.03+dfsg2-8) ...
+Selecting previously unselected package librecode0:amd64.
+Preparing to unpack .../librecode0_3.6-26_amd64.deb ...
+Unpacking librecode0:amd64 (3.6-26) ...
+Selecting previously unselected package fortune-mod.
+Preparing to unpack .../fortune-mod_1%3a1.99.1-7.3build1_amd64.deb ...
+Unpacking fortune-mod (1:1.99.1-7.3build1) ...
+Selecting previously unselected package fortunes-min.
+Preparing to unpack .../fortunes-min_1%3a1.99.1-7.3build1_all.deb ...
+Unpacking fortunes-min (1:1.99.1-7.3build1) ...
+Setting up librecode0:amd64 (3.6-26) ...
+Setting up fortunes-min (1:1.99.1-7.3build1) ...
+Setting up fortune-mod (1:1.99.1-7.3build1) ...
+Setting up cowsay (3.03+dfsg2-8) ...
+Processing triggers for man-db (2.12.0-4build2) ...
+Processing triggers for libc-bin (2.39-0ubuntu8.6) ...
+Scanning processes...                                                                                                                            
+Scanning linux images...                                                                                                                         
+
+Running kernel seems to be up-to-date.
+
+No services need to be restarted.
+
+No containers need to be restarted.
+
+No user sessions are running outdated binaries.
+
+No VM guests are running outdated hypervisor (qemu) binaries on this host.
+Hit:1 http://archive.ubuntu.com/ubuntu noble InRelease                                    
+Hit:2 http://security.ubuntu.com/ubuntu noble-security InRelease                          
+Hit:4 http://archive.ubuntu.com/ubuntu noble-updates InRelease                            
+Hit:5 https://packages.mozilla.org/apt mozilla InRelease
+Hit:6 http://archive.ubuntu.com/ubuntu noble-backports InRelease                
+Hit:3 https://prod-cdn.packages.k8s.io/repositories/isv:/kubernetes:/core:/stable:/v1.34/deb  InRelease
+Reading package lists... Done
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+fortune-mod is already the newest version (1:1.99.1-7.3build1).
+cowsay is already the newest version (3.03+dfsg2-8).
+netcat-openbsd is already the newest version (1.226-1ubuntu2).
+bash is already the newest version (5.2.21-2ubuntu4).
+0 upgraded, 0 newly installed, 0 to remove and 31 not upgraded.
+controlplane:~$ cat > Dockerfile <<'EOF'
+FROM debian:bookworm
+
+RUN apt-get update && apt-get install -y fortune-mod cowsay netcat-openbsd bash && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY wisecow.sh /usr/local/bin/wisecow.sh
+RUN chmod +x /usr/local/bin/wisecow.sh
+
+EXPOSE 4499
+CMD ["/usr/local/bin/wisecow.sh"]
+EOF
+
+cat > wisecow.sh <<'EOF'
+#!/bin/bash
+PORT=4499
+while true; do
+  MSG=$(fortune | cowsay)
+  echo -e "HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\n$MSG" | nc -l -p $PORT -q 1
+done
+EOF
+controlplane:~$ docker build -t wisecow .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+time="2025-11-07T14:10:13Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent to tar: archive/tar: sockets not supported"
+time="2025-11-07T14:10:13Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent.browser to tar: archive/tar: sockets not supported"
+time="2025-11-07T14:10:13Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent.extra to tar: archive/tar: sockets not supported"
+time="2025-11-07T14:10:13Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent.ssh to tar: archive/tar: sockets not supported"
+Sending build context to Docker daemon  92.17MB
+Step 1/6 : FROM debian:bookworm
+bookworm: Pulling from library/debian
+5d93aea69798: Pulling fs layer
+5d93aea69798: Verifying Checksum
+5d93aea69798: Download complete
+5d93aea69798: Pull complete
+Digest: sha256:6337ad82d5c764a8b6a16cde86b157fdce353e36d8ca06fc1b16d4f34d29960e
+Status: Downloaded newer image for debian:bookworm
+ ---> 160279ddc32d
+Step 2/6 : RUN apt-get update && apt-get install -y fortune-mod cowsay netcat-openbsd bash &&     apt-get clean && rm -rf /var/lib/apt/lists/*
+ ---> Running in 3f42ff711df2
+Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8791 kB]
+Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [284 kB]
+Fetched 9337 kB in 2s (3961 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+bash is already the newest version (5.2.15-2+b9).
+bash set to manually installed.
+The following additional packages will be installed:
+  fortunes-min libbsd0 libgdbm-compat4 libgdbm6 libperl5.36 librecode0
+  libtext-charwidth-perl netbase perl perl-modules-5.36
+Suggested packages:
+  filters cowsay-off fortunes x11-utils bsdmainutils gdbm-l10n sensible-utils
+  perl-doc libterm-readline-gnu-perl | libterm-readline-perl-perl make
+  libtap-harness-archive-perl
+The following NEW packages will be installed:
+  cowsay fortune-mod fortunes-min libbsd0 libgdbm-compat4 libgdbm6 libperl5.36
+  librecode0 libtext-charwidth-perl netbase netcat-openbsd perl
+  perl-modules-5.36
+0 upgraded, 13 newly installed, 0 to remove and 0 not upgraded.
+Need to get 8192 kB of archives.
+After this operation, 51.3 MB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bookworm/main amd64 perl-modules-5.36 all 5.36.0-7+deb12u3 [2815 kB]
+Get:2 http://deb.debian.org/debian bookworm/main amd64 libgdbm6 amd64 1.23-3 [72.2 kB]
+Get:3 http://deb.debian.org/debian bookworm/main amd64 libgdbm-compat4 amd64 1.23-3 [48.2 kB]
+Get:4 http://deb.debian.org/debian bookworm/main amd64 libperl5.36 amd64 5.36.0-7+deb12u3 [4196 kB]
+Get:5 http://deb.debian.org/debian bookworm/main amd64 perl amd64 5.36.0-7+deb12u3 [239 kB]
+Get:6 http://deb.debian.org/debian bookworm/main amd64 netbase all 6.4 [12.8 kB]
+Get:7 http://deb.debian.org/debian bookworm/main amd64 libtext-charwidth-perl amd64 0.04-11 [9496 B]
+Get:8 http://deb.debian.org/debian bookworm/main amd64 cowsay all 3.03+dfsg2-8 [21.4 kB]
+Get:9 http://deb.debian.org/debian bookworm/main amd64 librecode0 amd64 3.6-25 [524 kB]
+Get:10 http://deb.debian.org/debian bookworm/main amd64 fortune-mod amd64 1:1.99.1-7.3 [38.3 kB]
+Get:11 http://deb.debian.org/debian bookworm/main amd64 fortunes-min all 1:1.99.1-7.3 [56.5 kB]
+Get:12 http://deb.debian.org/debian bookworm/main amd64 libbsd0 amd64 0.11.7-2 [117 kB]
+Get:13 http://deb.debian.org/debian bookworm/main amd64 netcat-openbsd amd64 1.219-1 [41.5 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 8192 kB in 2s (4622 kB/s)
+Selecting previously unselected package perl-modules-5.36.
+(Reading database ... 6095 files and directories currently installed.)
+Preparing to unpack .../00-perl-modules-5.36_5.36.0-7+deb12u3_all.deb ...
+Unpacking perl-modules-5.36 (5.36.0-7+deb12u3) ...
+Selecting previously unselected package libgdbm6:amd64.
+Preparing to unpack .../01-libgdbm6_1.23-3_amd64.deb ...
+Unpacking libgdbm6:amd64 (1.23-3) ...
+Selecting previously unselected package libgdbm-compat4:amd64.
+Preparing to unpack .../02-libgdbm-compat4_1.23-3_amd64.deb ...
+Unpacking libgdbm-compat4:amd64 (1.23-3) ...
+Selecting previously unselected package libperl5.36:amd64.
+Preparing to unpack .../03-libperl5.36_5.36.0-7+deb12u3_amd64.deb ...
+Unpacking libperl5.36:amd64 (5.36.0-7+deb12u3) ...
+Selecting previously unselected package perl.
+Preparing to unpack .../04-perl_5.36.0-7+deb12u3_amd64.deb ...
+Unpacking perl (5.36.0-7+deb12u3) ...
+Selecting previously unselected package netbase.
+Preparing to unpack .../05-netbase_6.4_all.deb ...
+Unpacking netbase (6.4) ...
+Selecting previously unselected package libtext-charwidth-perl:amd64.
+Preparing to unpack .../06-libtext-charwidth-perl_0.04-11_amd64.deb ...
+Unpacking libtext-charwidth-perl:amd64 (0.04-11) ...
+Selecting previously unselected package cowsay.
+Preparing to unpack .../07-cowsay_3.03+dfsg2-8_all.deb ...
+Unpacking cowsay (3.03+dfsg2-8) ...
+Selecting previously unselected package librecode0:amd64.
+Preparing to unpack .../08-librecode0_3.6-25_amd64.deb ...
+Unpacking librecode0:amd64 (3.6-25) ...
+Selecting previously unselected package fortune-mod.
+Preparing to unpack .../09-fortune-mod_1%3a1.99.1-7.3_amd64.deb ...
+Unpacking fortune-mod (1:1.99.1-7.3) ...
+Selecting previously unselected package fortunes-min.
+Preparing to unpack .../10-fortunes-min_1%3a1.99.1-7.3_all.deb ...
+Unpacking fortunes-min (1:1.99.1-7.3) ...
+Selecting previously unselected package libbsd0:amd64.
+Preparing to unpack .../11-libbsd0_0.11.7-2_amd64.deb ...
+Unpacking libbsd0:amd64 (0.11.7-2) ...
+Selecting previously unselected package netcat-openbsd.
+Preparing to unpack .../12-netcat-openbsd_1.219-1_amd64.deb ...
+Unpacking netcat-openbsd (1.219-1) ...
+Setting up librecode0:amd64 (3.6-25) ...
+Setting up libtext-charwidth-perl:amd64 (0.04-11) ...
+Setting up perl-modules-5.36 (5.36.0-7+deb12u3) ...
+Setting up fortunes-min (1:1.99.1-7.3) ...
+Setting up fortune-mod (1:1.99.1-7.3) ...
+Setting up netbase (6.4) ...
+Setting up libbsd0:amd64 (0.11.7-2) ...
+Setting up libgdbm6:amd64 (1.23-3) ...
+Setting up netcat-openbsd (1.219-1) ...
+update-alternatives: using /bin/nc.openbsd to provide /bin/nc (nc) in auto mode
+Setting up libgdbm-compat4:amd64 (1.23-3) ...
+Setting up libperl5.36:amd64 (5.36.0-7+deb12u3) ...
+Setting up perl (5.36.0-7+deb12u3) ...
+Setting up cowsay (3.03+dfsg2-8) ...
+Processing triggers for libc-bin (2.36-9+deb12u13) ...
+ ---> Removed intermediate container 3f42ff711df2
+ ---> 07ccc490b068
+Step 3/6 : COPY wisecow.sh /usr/local/bin/wisecow.sh
+ ---> 6155b5897270
+Step 4/6 : RUN chmod +x /usr/local/bin/wisecow.sh
+ ---> Running in b78b975ba1d0
+ ---> Removed intermediate container b78b975ba1d0
+ ---> 20b50b193601
+Step 5/6 : EXPOSE 4499
+ ---> Running in 6f2b5551c6ac
+ ---> Removed intermediate container 6f2b5551c6ac
+ ---> e8e68c9eb5e1
+Step 6/6 : CMD ["/usr/local/bin/wisecow.sh"]
+ ---> Running in fdadedc0b2ab
+ ---> Removed intermediate container fdadedc0b2ab
+ ---> 748220ce2a9c
+Successfully built 748220ce2a9c
+Successfully tagged wisecow:latest
+controlplane:~$ apt install apt-utils
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+apt-utils is already the newest version (2.8.3).
+apt-utils set to manually installed.
+0 upgraded, 0 newly installed, 0 to remove and 31 not upgraded.
+controlplane:~$ docker build -t wisecow .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+time="2025-11-07T14:11:48Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent to tar: archive/tar: sockets not supported"
+time="2025-11-07T14:11:48Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent.browser to tar: archive/tar: sockets not supported"
+time="2025-11-07T14:11:48Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent.extra to tar: archive/tar: sockets not supported"
+time="2025-11-07T14:11:48Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent.ssh to tar: archive/tar: sockets not supported"
+Sending build context to Docker daemon  92.17MB
+Step 1/6 : FROM debian:bookworm
+ ---> 160279ddc32d
+Step 2/6 : RUN apt-get update && apt-get install -y fortune-mod cowsay netcat-openbsd bash &&     apt-get clean && rm -rf /var/lib/apt/lists/*
+ ---> Using cache
+ ---> 07ccc490b068
+Step 3/6 : COPY wisecow.sh /usr/local/bin/wisecow.sh
+ ---> Using cache
+ ---> 6155b5897270
+Step 4/6 : RUN chmod +x /usr/local/bin/wisecow.sh
+ ---> Using cache
+ ---> 20b50b193601
+Step 5/6 : EXPOSE 4499
+ ---> Using cache
+ ---> e8e68c9eb5e1
+Step 6/6 : CMD ["/usr/local/bin/wisecow.sh"]
+ ---> Using cache
+ ---> 748220ce2a9c
+Successfully built 748220ce2a9c
+Successfully tagged wisecow:latest
+controlplane:~$ docker run -d -p 4499:4499 wisecow
+e91867ec9c4210faa220676f64ae844f397c15ce8c1074a4e141e9d110d390ee
+controlplane:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED              STATUS              PORTS                                         NAMES
+e91867ec9c42   wisecow   "/usr/local/bin/wise…"   About a minute ago   Up About a minute   0.0.0.0:4499->4499/tcp, [::]:4499->4499/tcp   hopeful_merkle
+controlplane:~$ curl http://localhost:4499
+
+controlplane:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+e91867ec9c42   wisecow   "/usr/local/bin/wise…"   2 minutes ago   Up 2 minutes   0.0.0.0:4499->4499/tcp, [::]:4499->4499/tcp   hopeful_merkle
+controlplane:~$ docker logs e91867ec9c42
+/usr/local/bin/wisecow.sh: line 4: fortune: command not found
+/usr/local/bin/wisecow.sh: line 4: cowsay: command not found
+GET / HTTP/1.1
+Host: localhost:4499
+User-Agent: curl/8.5.0
+Accept: /
+
+/usr/local/bin/wisecow.sh: line 4: fortune: command not found
+/usr/local/bin/wisecow.sh: line 4: cowsay: command not found
+controlplane:~$ cat > Dockerfile <<'EOF'
+FROM ubuntu:22.04
+
+RUN apt-get update && apt-get install -y fortune cowsay netcat-openbsd && \
+    ln -s /usr/games/fortune /usr/bin/fortune && \
+    ln -s /usr/games/cowsay /usr/bin/cowsay && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+COPY wisecow.sh /usr/local/bin/wisecow.sh
+RUN chmod +x /usr/local/bin/wisecow.sh
+
+EXPOSE 4499
+CMD ["/usr/local/bin/wisecow.sh"]
+EOF
+controlplane:~$ docker build -t wisecow .
+docker run -d -p 4499:4499 wisecow
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+time="2025-11-07T14:17:20Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent to tar: archive/tar: sockets not supported"
+time="2025-11-07T14:17:20Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent.browser to tar: archive/tar: sockets not supported"
+time="2025-11-07T14:17:20Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent.extra to tar: archive/tar: sockets not supported"
+time="2025-11-07T14:17:20Z" level=error msg="Can't add file /root/.gnupg/S.gpg-agent.ssh to tar: archive/tar: sockets not supported"
+Sending build context to Docker daemon  92.17MB
+Step 1/6 : FROM ubuntu:22.04
+22.04: Pulling from library/ubuntu
+af6eca94c810: Pulling fs layer
+af6eca94c810: Verifying Checksum
+af6eca94c810: Download complete
+af6eca94c810: Pull complete
+Digest: sha256:09506232a8004baa32c47d68f1e5c307d648fdd59f5e7eaa42aaf87914100db3
+Status: Downloaded newer image for ubuntu:22.04
+ ---> 392fa14dddd0
+Step 2/6 : RUN apt-get update && apt-get install -y fortune cowsay netcat-openbsd &&     ln -s /usr/games/fortune /usr/bin/fortune &&     ln -s /usr/games/cowsay /usr/bin/cowsay &&     apt-get clean && rm -rf /var/lib/apt/lists/*
+ ---> Running in 23f0eb521026
+Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+Get:2 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]
+Get:3 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [3526 kB]
+Get:4 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+Get:5 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+Get:6 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [5969 kB]
+Get:7 http://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [17.5 MB]
+Get:8 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [60.9 kB]
+Get:9 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1289 kB]
+Get:10 http://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [266 kB]
+Get:11 http://archive.ubuntu.com/ubuntu jammy/restricted amd64 Packages [164 kB]
+Get:12 http://archive.ubuntu.com/ubuntu jammy/main amd64 Packages [1792 kB]
+Get:13 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [69.2 kB]
+Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [6168 kB]
+Get:15 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [3856 kB]
+Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1594 kB]
+Get:17 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [35.2 kB]
+Get:18 http://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [83.9 kB]
+Fetched 43.0 MB in 8s (5464 kB/s)
+Reading package lists...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  fortunes-min libbsd0 libgdbm-compat4 libgdbm6 libmd0 libperl5.34 librecode0
+  libtext-charwidth-perl netbase perl perl-modules-5.34
+Suggested packages:
+  filters cowsay-off fortunes x11-utils bsdmainutils gdbm-l10n perl-doc
+  libterm-readline-gnu-perl | libterm-readline-perl-perl make
+  libtap-harness-archive-perl
+The following NEW packages will be installed:
+  cowsay fortune-mod fortunes-min libbsd0 libgdbm-compat4 libgdbm6 libmd0
+  libperl5.34 librecode0 libtext-charwidth-perl netbase netcat-openbsd perl
+  perl-modules-5.34
+0 upgraded, 14 newly installed, 0 to remove and 2 not upgraded.
+Need to get 8957 kB of archives.
+After this operation, 50.8 MB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 perl-modules-5.34 all 5.34.0-3ubuntu1.5 [2977 kB]
+Get:2 http://archive.ubuntu.com/ubuntu jammy/main amd64 libgdbm6 amd64 1.23-1 [33.9 kB]
+Get:3 http://archive.ubuntu.com/ubuntu jammy/main amd64 libgdbm-compat4 amd64 1.23-1 [6606 B]
+Get:4 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libperl5.34 amd64 5.34.0-3ubuntu1.5 [4797 kB]
+Get:5 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 perl amd64 5.34.0-3ubuntu1.5 [232 kB]
+Get:6 http://archive.ubuntu.com/ubuntu jammy/main amd64 libmd0 amd64 1.0.4-1build1 [23.0 kB]
+Get:7 http://archive.ubuntu.com/ubuntu jammy/main amd64 libbsd0 amd64 0.11.5-1 [44.8 kB]
+Get:8 http://archive.ubuntu.com/ubuntu jammy/main amd64 libtext-charwidth-perl amd64 0.04-10build3 [10.2 kB]
+Get:9 http://archive.ubuntu.com/ubuntu jammy/main amd64 netbase all 6.3 [12.9 kB]
+Get:10 http://archive.ubuntu.com/ubuntu jammy/main amd64 netcat-openbsd amd64 1.218-4ubuntu1 [39.4 kB]
+Get:11 http://archive.ubuntu.com/ubuntu jammy/universe amd64 cowsay all 3.03+dfsg2-8 [18.6 kB]
+Get:12 http://archive.ubuntu.com/ubuntu jammy/main amd64 librecode0 amd64 3.6-24build2 [670 kB]
+Get:13 http://archive.ubuntu.com/ubuntu jammy/universe amd64 fortune-mod amd64 1:1.99.1-7.1 [36.9 kB]
+Get:14 http://archive.ubuntu.com/ubuntu jammy/universe amd64 fortunes-min all 1:1.99.1-7.1 [55.1 kB]
+debconf: delaying package configuration, since apt-utils is not installed
+Fetched 8957 kB in 4s (2038 kB/s)
+Selecting previously unselected package perl-modules-5.34.
+(Reading database ... 4393 files and directories currently installed.)
+Preparing to unpack .../00-perl-modules-5.34_5.34.0-3ubuntu1.5_all.deb ...
+Unpacking perl-modules-5.34 (5.34.0-3ubuntu1.5) ...
+Selecting previously unselected package libgdbm6:amd64.
+Preparing to unpack .../01-libgdbm6_1.23-1_amd64.deb ...
+Unpacking libgdbm6:amd64 (1.23-1) ...
+Selecting previously unselected package libgdbm-compat4:amd64.
+Preparing to unpack .../02-libgdbm-compat4_1.23-1_amd64.deb ...
+Unpacking libgdbm-compat4:amd64 (1.23-1) ...
+Selecting previously unselected package libperl5.34:amd64.
+Preparing to unpack .../03-libperl5.34_5.34.0-3ubuntu1.5_amd64.deb ...
+Unpacking libperl5.34:amd64 (5.34.0-3ubuntu1.5) ...
+Selecting previously unselected package perl.
+Preparing to unpack .../04-perl_5.34.0-3ubuntu1.5_amd64.deb ...
+Unpacking perl (5.34.0-3ubuntu1.5) ...
+Selecting previously unselected package libmd0:amd64.
+Preparing to unpack .../05-libmd0_1.0.4-1build1_amd64.deb ...
+Unpacking libmd0:amd64 (1.0.4-1build1) ...
+Selecting previously unselected package libbsd0:amd64.
+Preparing to unpack .../06-libbsd0_0.11.5-1_amd64.deb ...
+Unpacking libbsd0:amd64 (0.11.5-1) ...
+Selecting previously unselected package libtext-charwidth-perl.
+Preparing to unpack .../07-libtext-charwidth-perl_0.04-10build3_amd64.deb ...
+Unpacking libtext-charwidth-perl (0.04-10build3) ...
+Selecting previously unselected package netbase.
+Preparing to unpack .../08-netbase_6.3_all.deb ...
+Unpacking netbase (6.3) ...
+Selecting previously unselected package netcat-openbsd.
+Preparing to unpack .../09-netcat-openbsd_1.218-4ubuntu1_amd64.deb ...
+Unpacking netcat-openbsd (1.218-4ubuntu1) ...
+Selecting previously unselected package cowsay.
+Preparing to unpack .../10-cowsay_3.03+dfsg2-8_all.deb ...
+Unpacking cowsay (3.03+dfsg2-8) ...
+Selecting previously unselected package librecode0:amd64.
+Preparing to unpack .../11-librecode0_3.6-24build2_amd64.deb ...
+Unpacking librecode0:amd64 (3.6-24build2) ...
+Selecting previously unselected package fortune-mod.
+Preparing to unpack .../12-fortune-mod_1%3a1.99.1-7.1_amd64.deb ...
+Unpacking fortune-mod (1:1.99.1-7.1) ...
+Selecting previously unselected package fortunes-min.
+Preparing to unpack .../13-fortunes-min_1%3a1.99.1-7.1_all.deb ...
+Unpacking fortunes-min (1:1.99.1-7.1) ...
+Setting up librecode0:amd64 (3.6-24build2) ...
+Setting up libtext-charwidth-perl (0.04-10build3) ...
+Setting up perl-modules-5.34 (5.34.0-3ubuntu1.5) ...
+Setting up fortunes-min (1:1.99.1-7.1) ...
+Setting up libmd0:amd64 (1.0.4-1build1) ...
+Setting up fortune-mod (1:1.99.1-7.1) ...
+Setting up netbase (6.3) ...
+Setting up libbsd0:amd64 (0.11.5-1) ...
+Setting up libgdbm6:amd64 (1.23-1) ...
+Setting up netcat-openbsd (1.218-4ubuntu1) ...
+update-alternatives: using /bin/nc.openbsd to provide /bin/nc (nc) in auto mode
+update-alternatives: warning: skip creation of /usr/share/man/man1/nc.1.gz because associated file /usr/share/man/man1/nc_openbsd.1.gz (of link group nc) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/netcat.1.gz because associated file /usr/share/man/man1/nc_openbsd.1.gz (of link group nc) doesn't exist
+Setting up libgdbm-compat4:amd64 (1.23-1) ...
+Setting up libperl5.34:amd64 (5.34.0-3ubuntu1.5) ...
+Setting up perl (5.34.0-3ubuntu1.5) ...
+Setting up cowsay (3.03+dfsg2-8) ...
+Processing triggers for libc-bin (2.35-0ubuntu3.11) ...
+ ---> Removed intermediate container 23f0eb521026
+ ---> 3be4aa970072
+Step 3/6 : COPY wisecow.sh /usr/local/bin/wisecow.sh
+ ---> a7802cb703b1
+Step 4/6 : RUN chmod +x /usr/local/bin/wisecow.sh
+ ---> Running in 27575c92a924
+ ---> Removed intermediate container 27575c92a924
+ ---> 7fa748cbbc5c
+Step 5/6 : EXPOSE 4499
+ ---> Running in 5b342fde0922
+ ---> Removed intermediate container 5b342fde0922
+ ---> 3469c7a9ccd6
+Step 6/6 : CMD ["/usr/local/bin/wisecow.sh"]
+ ---> Running in 1f2220466a7f
+ ---> Removed intermediate container 1f2220466a7f
+ ---> 47a6106411ef
+Successfully built 47a6106411ef
+Successfully tagged wisecow:latest
+18f9cca2b207c19f834c1a18dcd72ebddae4f391b16662311f1dc56f49505b8b
+docker: Error response from daemon: failed to set up container networking: driver failed programming external connectivity on endpoint charming_grothendieck (4786967f73fba61b10cbcad3ec500e8512090015bac1e5d6853371e88e083e27): Bind for 0.0.0.0:4499 failed: port is already allocated
+
+Run 'docker run --help' for more information
+controlplane:~$ curl http://localhost:4499
+
+controlplane:~$ docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+e91867ec9c42   748220ce2a9c   "/usr/local/bin/wise…"   8 minutes ago   Up 8 minutes   0.0.0.0:4499->4499/tcp, [::]:4499->4499/tcp   hopeful_merkle
+controlplane:~$ docker stop e91867ec9c42
+docker rm e91867ec9c42
+
+
+
+
+
+e91867ec9c42
+e91867ec9c42
+controlplane:~$ 
+controlplane:~$ 
+controlplane:~$ 
+controlplane:~$ 
+controlplane:~$ 
+controlplane:~$ docker run -d -p 4499:4499 wisecow
+cc0be2239467410a410e4b873f2bbf952ece457d74f314191736de9db0bb60dd
+controlplane:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+cc0be2239467   wisecow   "/usr/local/bin/wise…"   7 seconds ago   Up 7 seconds   0.0.0.0:4499->4499/tcp, [::]:4499->4499/tcp   confident_chebyshev
+controlplane:~$ curl http://localhost:4499
+ _________________________________________
+/ Q: "What is the burning question on the \
+| mind of every dyslexic                  |
+|                                         |
+\ existentialist?" A: "Is there a dog?"   /
+ -----------------------------------------
+        \   ^^
+         \  (oo)\_______
+            ()\       )\/\
+                ||----w |
+                ||     ||
+controlplane:~$
+
+
+
+
+
+
