@@ -1,0 +1,13 @@
+docker build -t wisecow .
+docker run -d -p 4499:4499 wisecow
+curl http://localhost:4499
+expected o/p:
+
+ ___________________________________
+< You will learn Kubernetes today! >
+ -----------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
